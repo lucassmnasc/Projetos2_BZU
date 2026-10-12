@@ -57,7 +57,7 @@ Depois, acesse `http://127.0.0.1:8000`.
 |---|---|
 | Arthur Andrade | Desenvolvedor |
 | Lucas Silva | Desenvolvedor |
-| Mariana Moreira | Desenvolvedora |
+| Mariana Melo | Desenvolvedora |
 | Matheus Trajano | Desenvolvedor |
 | Paulo Fonseca | Desenvolvedor |
 | Ricardo Bayma | Desenvolvedor |
