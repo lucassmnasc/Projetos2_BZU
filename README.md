@@ -53,6 +53,8 @@ Depois, acesse `http://127.0.0.1:8000`.
 
 ## Equipe
 
+<div align="center">
+
 | Nome | Função |
 |---|---|
 | Arthur Andrade | Desenvolvedor |
@@ -66,5 +68,7 @@ Depois, acesse `http://127.0.0.1:8000`.
 | Maria Eduarda | Designer |
 | Sofia Nunes | Designer |
 
----
 © 2026 Grupo 11 – CESAR School & Bzu Tech
+
+---
+</div>
