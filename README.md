@@ -8,7 +8,7 @@ Projeto do **Grupo 11 – Projetos 2**, da **CESAR School**, em parceria com a *
 
 A Bzu é uma empresa de IoT focada na consolidação e gestão de empresas do setor de serviços automotivos e de mobilidade no Brasil, com atuação forte em redes de autocentros e manutenção veicular.
 
-O projeto busca **educar empresas sobre a importância de coletar dados operacionais por meio de IoT**, para melhorar a gestão e a tomada de decisão. Esse conhecimento também é transformado em percepção de mercado e direcionamento estratégico para a marca.
+O projeto busca **educar empresas sobre a importância de coletar dados operacionais por meio de IoT**, para melhorar a gestão e a tomada de decisão. Esse conhecimento também é transformado em percepção de mercado e direcionamento estratégico para a marca. Assim, surge a Logus, uma solução Bzu para empresas das mais diversas operações.
 
 ## A solução
 
