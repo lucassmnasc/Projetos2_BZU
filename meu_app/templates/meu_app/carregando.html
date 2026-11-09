@@ -7,7 +7,8 @@
 <section class="carregando">
   <h1 class="titulo">Vamos personalizar<br>seu d<span class="grad-2">iagnóstico.</span></h1>
   <p class="subtitulo">Suas respostas ajudam a priorizar as oportunidades com maior impacto para a operação.</p>
-  <a class="btn btn-outline" id="status" href="{% url 'questionario' %}" data-proxima="{% url 'questionario' %}">carregando...</a>
+    <p class="status-carregando" id="status" role="status" data-proxima="{% url 'questionario' %}">carregando...</p>
+  <noscript><meta http-equiv="refresh" content="3;url={% url 'questionario' %}"></noscript>
 </section>
 {% endblock %}
 

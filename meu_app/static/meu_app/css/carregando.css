@@ -1,3 +1,3 @@
 .carregando{width:min(1243px,calc(100% - 48px));margin:182px auto 0;display:flex;flex-direction:column;gap:24px;align-items:flex-start}
 .carregando .titulo{line-height:1.2}
-.carregando .btn-outline{min-width:189px;padding:19px;font-size:19.4px}
+.carregando .status-carregando{margin:0;font-size:19.4px;font-weight:500;opacity:.8}

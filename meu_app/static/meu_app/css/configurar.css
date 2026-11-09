@@ -1,6 +1,6 @@
 .cabecalho{padding-top:182px;display:flex;flex-direction:column;gap:28px;align-items:flex-start}
 .cabecalho .subtitulo{max-width:1014px}
-.btn-pill{border-radius:40px;padding:25.8px;min-width:253px;font-size:26px;justify-content:flex-start}
+.btn-pill{border-radius:40px;padding:25.8px;min-width:253px;font-size:26px;justify-content:center}
 
 .painel{margin-top:100px;padding:37px 35px 40px;border-radius:27.7px}
 .painel-topo{display:flex;justify-content:space-between;align-items:center;padding:0 13px}
