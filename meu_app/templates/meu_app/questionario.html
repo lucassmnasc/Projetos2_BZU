@@ -1,0 +1,22 @@
+{% extends 'meu_app/base.html' %}
+{% load static %}
+{% block title %}Bzu Tech | Questionário{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'meu_app/css/questionario.css' %}">{% endblock %}
+
+{% block content %}
+<section class="pergunta glass">
+  <h1>Como a sua empresa coleta dados hoje?</h1>
+  <div class="opcoes" role="radiogroup" aria-label="Como a sua empresa coleta dados hoje?">
+    <button class="opcao" type="button" role="radio" aria-checked="false" data-valor="nao-coletamos"><i></i>Não coletamos</button>
+    <button class="opcao" type="button" role="radio" aria-checked="false" data-valor="planilha-manual"><i></i>Planilha manual</button>
+    <button class="opcao" type="button" role="radio" aria-checked="false" data-valor="ia"><i></i>IA</button>
+    <button class="opcao" type="button" role="radio" aria-checked="false" data-valor="sensoriamento"><i></i>Sensoriamento</button>
+  </div>
+</section>
+<div class="navegacao">
+  <a class="btn btn-outline" href="{% url 'home' %}">&lt; anterior</a>
+  <a class="btn btn-outline" href="{% url 'configurar' %}">próxima &gt;</a>
+</div>
+{% endblock %}
+
+{% block js %}<script src="{% static 'meu_app/js/questionario.js' %}"></script>{% endblock %}

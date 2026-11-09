@@ -1,0 +1,14 @@
+{% extends 'meu_app/base.html' %}
+{% load static %}
+{% block title %}Bzu Tech | Carregando{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'meu_app/css/carregando.css' %}">{% endblock %}
+
+{% block content %}
+<section class="carregando">
+  <h1 class="titulo">Vamos personalizar<br>seu d<span class="grad-2">iagnóstico.</span></h1>
+  <p class="subtitulo">Suas respostas ajudam a priorizar as oportunidades com maior impacto para a operação.</p>
+  <a class="btn btn-outline" id="status" href="{% url 'questionario' %}" data-proxima="{% url 'questionario' %}">carregando...</a>
+</section>
+{% endblock %}
+
+{% block js %}<script src="{% static 'meu_app/js/carregando.js' %}"></script>{% endblock %}

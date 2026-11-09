@@ -18,7 +18,16 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
 
+
+def tela(nome):
+    return TemplateView.as_view(template_name=f'meu_app/{nome}.html')
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='core/index.html'), name='home'),
+    path('', tela('home'), name='home'),
+    path('carregando/', tela('carregando'), name='carregando'),
+    path('questionario/', tela('questionario'), name='questionario'),
+    path('configurar/', tela('configurar'), name='configurar'),
+    path('resultado/', tela('resultado'), name='resultado'),
 ]

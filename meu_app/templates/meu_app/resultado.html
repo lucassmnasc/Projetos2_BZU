@@ -1,0 +1,65 @@
+{% extends 'meu_app/base.html' %}
+{% load static %}
+{% block title %}Bzu Tech | Visão geral da oportunidade{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'meu_app/css/resultado.css' %}">{% endblock %}
+
+{% block content %}
+<div class="container">
+  <section class="cabecalho">
+    <div class="linha-titulo">
+      <h1 class="titulo">Visão geral da <span class="grad">oportunidade</span><span class="ponto">.</span></h1>
+      <span class="selo"><img src="{% static 'meu_app/img/ic-check.svg' %}" alt="" width="6" height="6">Análise concluída</span>
+    </div>
+    <p class="subtitulo">Cenário para indústria, priorizando energia e utilidades.<br>Clique em cada indicador para explorar.</p>
+  </section>
+
+  <section class="indicadores" aria-label="Indicadores">
+    <button class="indicador glass" type="button" data-alvo="#det-economia">
+      <img src="{% static 'meu_app/img/ic-grafico.svg' %}" alt="" height="30">
+      <small>Economia anual estimada</small><strong>R$ 356.400</strong><em>ver detalhe &gt;</em></button>
+    <button class="indicador glass" type="button" data-alvo="#det-roi">
+      <img src="{% static 'meu_app/img/ic-roi.svg' %}" alt="" height="30">
+      <small>ROI estimado em 12 meses</small><strong>297%</strong><em>ver detalhe &gt;</em></button>
+    <button class="indicador glass" type="button" data-alvo="#det-payback">
+      <img src="{% static 'meu_app/img/ic-relogio.svg' %}" alt="" height="30">
+      <small>Payback aproximado</small><strong>4 meses</strong><em>ver detalhe &gt;</em></button>
+    <button class="indicador glass" type="button" data-alvo="#det-eficiencia">
+      <img src="{% static 'meu_app/img/ic-energia.svg' %}" alt="" height="30">
+      <small>Economia em energia média</small><strong>18%</strong><em>ver detalhe &gt;</em></button>
+  </section>
+
+  <div class="detalhes">
+    <section id="det-economia" class="detalhe glass">
+      <header><img src="{% static 'meu_app/img/ic-grafico.svg' %}" alt="" height="35"><h2>Economia anual</h2></header>
+      <p class="valor">R$ 356.400</p>
+      <div class="rodape"><div><h3>Parâmetros analisados:</h3><p>Inserir análise feita pela IA</p></div>
+        <div class="barras" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    </section>
+
+    <section id="det-roi" class="detalhe glass">
+      <header><img src="{% static 'meu_app/img/ic-roi.svg' %}" alt="" height="33"><h2>ROI em 12 meses no setor</h2></header>
+      <p class="valor">297%</p>
+      <div class="rodape"><div><h3>Parâmetros analisados:</h3><p>Inserir análise feita pela IA</p></div>
+        <div class="barras" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    </section>
+
+    <section id="det-payback" class="detalhe glass">
+      <header><img src="{% static 'meu_app/img/ic-relogio.svg' %}" alt="" height="30"><h2>Payback</h2></header>
+      <p class="valor">4 meses</p>
+      <div class="rodape"><div><h3>Parâmetros analisados:</h3><p>Inserir análise feita pela IA</p></div>
+        <div class="barras" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    </section>
+
+    <section id="det-eficiencia" class="detalhe glass">
+      <header><img src="{% static 'meu_app/img/ic-relogio.svg' %}" alt="" height="30"><h2>Eficiência energética</h2></header>
+      <p class="valor">18% <span class="unidade">em redução</span></p>
+      <div class="rodape"><div><h3>Parâmetros analisados:</h3><p>Inserir análise feita pela IA</p></div>
+        <div class="barras" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    </section>
+  </div>
+
+  <div class="fim"><a class="btn btn-outline" href="{% url 'home' %}">próxima &gt;</a></div>
+</div>
+{% endblock %}
+
+{% block js %}<script src="{% static 'meu_app/js/resultado.js' %}"></script>{% endblock %}

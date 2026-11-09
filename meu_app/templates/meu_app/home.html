@@ -1,0 +1,35 @@
+{% extends 'meu_app/base.html' %}
+{% load static %}
+{% block title %}Bzu Tech | Simulador IoT{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'meu_app/css/home.css' %}">{% endblock %}
+
+{% block content %}
+<section class="hero glass">
+  <h1>Teste sua economia com IoT antes de investir.</h1>
+  <p>Simule de maneira personalizada e identifique onde a Bzu Tech pode trabalhar para otimizar sua operação.</p>
+  <div class="hero-acoes">
+    <a class="btn btn-primary" href="{% url 'carregando' %}">iniciar simulação</a>
+    <button class="btn btn-ghost" type="button" data-scroll="#passos">veja como funciona</button>
+  </div>
+</section>
+
+<section id="passos" class="passos">
+  <h2>Três passos. Zero complicação.</h2>
+  <p class="passos-sub">Do formulário às soluções certas para o seu projeto.</p>
+  <div class="passos-grid">
+    <article class="passo glass"><span class="num">1</span><h3>Responda o questionário.</h3>
+      <p>Com poucas perguntas, o simulador entende como o IoT pode funcionar no seu negócio.</p></article>
+    <article class="passo glass"><span class="num">2</span><h3>Rode o cenário.</h3>
+      <p>Simule a sua operação com sensores virtuais e estime resultados antes de investir em hardware.</p></article>
+    <article class="passo glass"><span class="num">3</span><h3>Analise resultados e nossas soluções.</h3>
+      <p>Descubra onde economizar, quais sensores combinam com a sua operação e quais parâmetros podem ser monitorados.</p></article>
+  </div>
+  <div class="cta">
+    <h3>Experimente agora.</h3>
+    <a class="btn btn-primary" href="{% url 'carregando' %}">iniciar simulação</a>
+  </div>
+</section>
+<div class="faixa"></div>
+{% endblock %}
+
+{% block js %}<script src="{% static 'meu_app/js/home.js' %}"></script>{% endblock %}

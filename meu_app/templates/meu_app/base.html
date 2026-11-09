@@ -1,0 +1,37 @@
+{% load static %}<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Bzu Tech{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700&family=Montserrat:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="{% static 'meu_app/css/base.css' %}">
+  {% block css %}{% endblock %}
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <header class="navbar">
+    <a class="logo" href="{% url 'home' %}"><img src="{% static 'meu_app/img/logo-bzu.svg' %}" alt="Bzu Tech"></a>
+    <nav class="nav-items" aria-label="Principal">
+      <a href="#">SOBRE A BZU</a>
+      <a href="#">SOLUÇÃO BZU</a>
+      <a href="#">SEGMENTOS</a>
+      <a href="#">DIFERENCIAIS</a>
+      <a href="#">CASES</a>
+      <a href="#">INOVAÇÃO</a>
+      <a href="#">QUEM FAZ</a>
+      <a href="#">CONTATO</a>
+      <a href="#">LOGIN</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="{% url 'home' %}">Simulador <img src="{% static 'meu_app/img/seta.svg' %}" alt="" width="7" height="20"></a>
+  </header>
+
+  <main>{% block content %}{% endblock %}</main>
+
+  <script src="{% static 'meu_app/js/base.js' %}"></script>
+  {% block js %}{% endblock %}
+</body>
+</html>

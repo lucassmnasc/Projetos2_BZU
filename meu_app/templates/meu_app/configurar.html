@@ -1,0 +1,50 @@
+{% extends 'meu_app/base.html' %}
+{% load static %}
+{% block title %}Bzu Tech | Configure sua operação{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'meu_app/css/configurar.css' %}">{% endblock %}
+
+{% block content %}
+<div class="container">
+  <section class="cabecalho">
+    <h1 class="titulo">Configure sua <span class="grad">operação</span><span class="ponto">.</span></h1>
+    <p class="subtitulo">Personalize sua simulação de acordo com a necessidade da sua operação.</p>
+    <button class="btn btn-outline btn-pill" type="button" data-scroll="#dispositivos">clique aqui</button>
+  </section>
+
+  <section id="dispositivos" class="painel glass">
+    <div class="painel-topo">
+      <h2>Dispositivos conectados</h2>
+      <output id="valor-disp" class="badge" for="qtd">80</output>
+    </div>
+    <input id="qtd" type="range" min="10" max="500" step="10" value="80" aria-label="Dispositivos conectados">
+    <div class="escala"><span>10 dispositivos</span><span>500+ dispositivos</span></div>
+  </section>
+
+  <section class="endpoints" aria-label="Endpoints">
+    <button class="endpoint glass" type="button" data-ep="EP111"><small>Endpoint</small><strong>EP111</strong><em>aplicações na operação &gt;</em></button>
+    <button class="endpoint glass" type="button" data-ep="EP300"><small>Endpoint</small><strong>EP300</strong><em>aplicações na operação &gt;</em></button>
+    <button class="endpoint glass" type="button" data-ep="EP400"><small>Endpoint</small><strong>EP400</strong><em>aplicações na operação &gt;</em></button>
+    <button class="endpoint glass" type="button" data-ep="EP600"><small>Endpoint</small><strong>EP600</strong><em>aplicações na operação &gt;</em></button>
+  </section>
+
+  <section class="resumo glass">
+    <h2>Resumo da simulação</h2>
+    <div class="linha"><img src="{% static 'meu_app/img/ic-dispositivos.svg' %}" alt="" width="15" height="11"><span>Dispositivos</span><hr><b id="res-disp">80</b></div>
+    <div class="linha"><img src="{% static 'meu_app/img/ic-cobertura.svg' %}" alt="" width="13" height="12"><span>Cobertura</span><hr><b>70%</b></div>
+  </section>
+
+  <section class="lead">
+    <h2>Receba uma proposta personalizada:</h2>
+    <form id="form-lead">
+      <label class="campo cheio">Nome completo<input name="nome" type="text" placeholder="Como posso te chamar?" required></label>
+      <label class="campo cheio">E-mail<input name="email" type="email" placeholder="seunome@email.com" required></label>
+      <label class="campo">Empresa<input name="empresa" type="text" placeholder="Nome da empresa"></label>
+      <label class="campo">Telefone/WhatsApp<input name="telefone" type="tel" placeholder="(81)0000-0000"></label>
+      <button class="enviar" type="submit">Solicitar proposta comercial <img src="{% static 'meu_app/img/ic-enviar.svg' %}" alt="" width="18" height="18"></button>
+    </form>
+  </section>
+</div>
+<span id="url-resultado" data-url="{% url 'resultado' %}" hidden></span>
+{% endblock %}
+
+{% block js %}<script src="{% static 'meu_app/js/configurar.js' %}"></script>{% endblock %}

@@ -1,0 +1,25 @@
+.hero{width:min(1144px,calc(100% - 48px));margin:12px auto 0;padding:64px 51px;text-align:center}
+.hero h1{margin:0 auto 40px;max-width:825px;font-size:clamp(38px,4.5vw,65px);font-weight:700;line-height:1.1;letter-spacing:-1.6px}
+.hero p{margin:0 auto 40px;max-width:894px;font-size:clamp(18px,2vw,28.6px);font-weight:300;line-height:1.4;letter-spacing:-.7px}
+.hero-acoes{display:flex;gap:39px;justify-content:center;flex-wrap:wrap}
+.hero-acoes .btn-primary{width:328px}
+.btn-ghost{width:317px;background:transparent;border:.72px solid var(--roxo);color:var(--roxo);
+  border-radius:25px;padding:11.5px 23px;font-family:'Inter',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.45px}
+.btn-ghost:hover{background:rgba(97,15,110,.2)}
+
+.passos{margin-top:63px;text-align:center}
+.passos h2{margin:0 auto;max-width:622px;font-size:clamp(38px,4.5vw,65px);font-weight:700;line-height:1.4;letter-spacing:-1.6px}
+.passos-sub{margin:40px 0 0;font-size:clamp(18px,2vw,28.6px);font-weight:300;letter-spacing:-.7px}
+.passos-grid{display:grid;grid-template-columns:repeat(3,359px);gap:36px;justify-content:center;margin-top:60px}
+.passo{padding:36px 24px 30px;text-align:left;min-height:316px}
+.num{display:grid;place-items:center;width:56px;height:56px;border-radius:12px;background:var(--roxo-badge);
+  color:var(--bg);font-weight:700;font-size:24px}
+.passo h3{margin:24px 0;font-size:24px;font-weight:700;line-height:1.4;letter-spacing:-.6px}
+.passo p{margin:0;font-size:19px;font-weight:300;line-height:1.4;letter-spacing:-.47px}
+.cta{margin:28px auto 0;display:flex;flex-direction:column;align-items:center;gap:11px}
+.cta h3{margin:0;font-size:33px;font-weight:700;letter-spacing:-.8px}
+.cta .btn-primary{width:325px}
+.faixa{height:190px;margin-top:184px;background:var(--roxo-badge)}
+
+@media (max-width:1250px){.passos-grid{grid-template-columns:1fr;max-width:420px;margin-inline:auto}}
+@media (max-width:700px){.hero{padding:40px 20px}.hero-acoes .btn{width:100%}}
