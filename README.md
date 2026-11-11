@@ -8,7 +8,7 @@ Projeto 2 do Grupo 11 do semestre 2026.2 da CESAR School, realizado para a empre
 
 A _Bzu Tech_ é uma empresa de IoT focada na consolidação e gestão de empresas do setor de serviços automotivos e de mobilidade no Brasil, com atuação forte em redes de autocentros e manutenção veicular.
 
-O nosso projeto busca **educar empresas sobre a importância de coletar dados operacionais por meio de IoT**, para melhorar a gestão e a tomada de decisão. Esse conhecimento também é transformado em percepção de mercado e direcionamento estratégico para a marca. Assim, surge a ___Logus___, uma empresa de consultoria focada no alavancamento de empresas de tecnologia interessadas em conseguir aumentar seu alcance no mercado, como é o caso a _Bzu Tech_.
+O nosso projeto busca **educar empresas sobre a importância de coletar dados operacionais por meio de IoT**, para melhorar a gestão e a tomada de decisão. Esse conhecimento também é transformado em percepção de mercado e direcionamento estratégico para a marca. Assim, surge a ___Logus___, uma empresa de consultoria focada no alavancamento de empresas de tecnologia interessadas em conseguir aumentar seu alcance no mercado, como é o caso da _Bzu Tech_.
 
 ## A solução
 
