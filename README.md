@@ -1,14 +1,14 @@
 # IoT para máxima eficiência
 
-Projeto do **Grupo 11 – Projetos 2**, da **CESAR School**, em parceria com a **Bzu Tech**.
+Projeto 2 do Grupo 11 do semestre 2026.2 da CESAR School, realizado para a empresa _Bzu Tech_, especializada em soluções de IoT.
 
 🔗 [Site do projeto](https://sites.google.com/cesar.school/grupo-11-projetos-2/in%C3%ADcio) | [Repositório](https://github.com/lucassmnasc/Projetos2_BZU)
 
 ## Sobre o projeto
 
-A Bzu é uma empresa de IoT focada na consolidação e gestão de empresas do setor de serviços automotivos e de mobilidade no Brasil, com atuação forte em redes de autocentros e manutenção veicular.
+A _Bzu Tech_ é uma empresa de IoT focada na consolidação e gestão de empresas do setor de serviços automotivos e de mobilidade no Brasil, com atuação forte em redes de autocentros e manutenção veicular.
 
-O projeto busca **educar empresas sobre a importância de coletar dados operacionais por meio de IoT**, para melhorar a gestão e a tomada de decisão. Esse conhecimento também é transformado em percepção de mercado e direcionamento estratégico para a marca. Assim, surge a Logus, uma solução Bzu para empresas das mais diversas operações.
+O nosso projeto busca **educar empresas sobre a importância de coletar dados operacionais por meio de IoT**, para melhorar a gestão e a tomada de decisão. Esse conhecimento também é transformado em percepção de mercado e direcionamento estratégico para a marca. Assim, surge a ___Logus___, uma empresa de consultoria focada no alavancamento de empresas de tecnologia interessadas em conseguir aumentar seu alcance no mercado, como é o caso a _Bzu Tech_.
 
 ## A solução
 
@@ -16,19 +16,19 @@ Uma aba com **IA preditiva** dentro da plataforma, que **simula quanto o empreen
 
 ## Como chegamos nela
 
-1. **Desk research:** pesquisa sobre o uso de IoT no mercado brasileiro (notícias, dados, produção acadêmica, vídeos, podcasts e blogs).
-2. **Pesquisa com usuários:** criação do formulário de entrevista.
-3. **Entrevistas e questionário:** coleta e organização das respostas.
-4. **Matriz de priorização:** brainstorm e filtro das ideias por impacto/valor e esforço/custo.
-5. **Ideação:** definição da IA preditiva de simulação de economia.
+1. **Desk Research:** Pesquisa sobre o uso de IoT no mercado brasileiro (notícias, dados, produções acadêmicas, vídeos, podcasts e blogs).
+2. **Pesquisa com Usuários:** Criação do formulário de entrevista.
+3. **Entrevistas e Questionário:** Coleta e organização das respostas.
+4. **Matriz de Priorização:** Brainstorm e filtro das ideias por impacto/valor e esforço/custo.
+5. **Ideação:** Definição da IA preditiva de simulação de economia.
 
 ## Tecnologias
 
 - Python
-- Django (back-end e interface web)
-- IA preditiva para a simulação de economia
+- Django (Back-end e interface web)
+- IA preditiva para simulação de economia
 
-> Se vocês usaram bibliotecas de machine learning (ex.: scikit-learn, pandas), adicionem aqui e no `pip install`.
+<!-- > Se vocês usaram bibliotecas de machine learning (ex.: scikit-learn, pandas), adicionem aqui e no `pip install`. -->
 
 ## Como executar
 
