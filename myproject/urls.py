@@ -28,5 +28,7 @@ urlpatterns = [
     path("api/simular/", views.api_simular, name="api_simular"),
     path("api/chat/", views.api_chat, name="api_chat"),
     path("api/questionario/", views.api_questionario, name="api_questionario"),
+    path("resultado/<int:pk>/", views.resultado_page, name="resultado"),
+    path("api/simulacao/<int:pk>/executar/", views.api_executar_simulacao, name="api_executar_simulacao"),
     path("api/dispositivos/", views.api_dispositivos, name="api_dispositivos"),
 ]

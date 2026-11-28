@@ -1,66 +1,138 @@
 {% extends 'meu_app/base.html' %}
 {% load static %}
-{% block title %}Bzu Tech | Configure sua operação{% endblock %}
-{% block css %}<link rel="stylesheet" href="{% static 'meu_app/css/configurar.css' %}">{% endblock %}
+{% block title %}Bzu Tech | Resultado da simulação{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'meu_app/css/configurar.css' %}?v=2">{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container resultado">
   <section class="cabecalho">
-    <h1 class="titulo">Configure sua <span class="grad">Operação</span><span class="ponto">.</span></h1>
-    <p class="subtitulo">Personalize sua simulação de acordo com a necessidade da sua operação.</p>
-    <button class="btn btn-outline btn-pill" type="button" data-scroll="#dispositivos">Clique aqui</button>
+    <h1 class="titulo">Resultado da sua <span class="grad">Simulação</span><span class="ponto">.</span></h1>
+    <p class="subtitulo">
+      Estimativa gerada a partir das suas respostas, do catálogo de dispositivos Bzu
+      e de uma pesquisa de preços atuais feita pela Bizu AI.
+    </p>
   </section>
 
-  <section id="dispositivos" class="painel glass">
-    <div class="painel-topo">
-      <h2>Dispositivos conectados</h2>
-      <output id="valor-disp" class="badge" for="qtd">80</output>
+  {% if aguardando %}
+  {# Carregando: configurar.js chama a API, que roda as regras e a IA, e recarrega a página. #}
+  <section class="painel glass carregando-resultado" id="aguardando"
+           data-api="{% url 'api_executar_simulacao' simulacao.pk %}">
+    {% csrf_token %}
+    <span class="spinner" aria-hidden="true"></span>
+    <div>
+      <h2 role="status" id="status-simulacao">Analisando sua operação…</h2>
+      <p>A Bizu AI está conferindo o cálculo e pesquisando preços e tendências atuais. Isso pode levar até 1 minuto.</p>
+      <p class="erro-carregando" id="erro-carregando" hidden></p>
+      <button class="btn btn-outline" id="tentar-novamente" type="button" hidden>Tentar novamente</button>
     </div>
-    <input id="qtd" type="range" min="1" max="500" step="1" value="80" aria-label="Dispositivos conectados">
-    <div class="escala"><span>1 dispositivos</span><span>500+ dispositivos</span></div>
   </section>
 
-  <section class="endpoints" aria-label="Endpoints">
-    <button class="endpoint glass" type="button" data-ep="EP111"><small>Endpoint</small><strong>EP111</strong><em>Aplicações na operação &gt;</em></button>
-    <button class="endpoint glass" type="button" data-ep="EP300"><small>Endpoint</small><strong>EP300</strong><em>Aplicações na operação &gt;</em></button>
-    <button class="endpoint glass" type="button" data-ep="EP400"><small>Endpoint</small><strong>EP400</strong><em>Aplicações na operação &gt;</em></button>
-    <button class="endpoint glass" type="button" data-ep="EP600"><small>Endpoint</small><strong>EP600</strong><em>Aplicações na operação &gt;</em></button>
+  {% elif not base %}
+  <section class="painel glass aviso aviso-erro" role="alert">
+    <h2>Não foi possível gerar o resultado.</h2>
+    <p>Tivemos um problema ao calcular sua simulação. Suas respostas foram salvas; tente refazer a simulação em alguns minutos.</p>
+    <a class="btn btn-outline" href="{% url 'questionario' %}">Refazer simulação</a>
   </section>
 
-  <section class="resumo glass">
-    <h2>Resumo da simulação</h2>
-    <div class="linha"><img src="{% static 'meu_app/img/ic-dispositivos.svg' %}" alt="" width="15" height="11"><span>Dispositivos</span><hr><b id="res-disp">80</b></div>
-    <div class="linha"><img src="{% static 'meu_app/img/ic-cobertura.svg' %}" alt="" width="13" height="12"><span>Cobertura</span><hr><b>70%</b></div>
-  </section>
+  {% else %}
+    {% if simulacao.status == 'erro' %}
+    <section class="aviso aviso-erro" role="alert">
+      <strong>A análise da Bizu AI não ficou pronta.</strong>
+      Abaixo está o cálculo feito pelas regras do simulador. Tente refazer a simulação mais tarde para receber a análise completa.
+    </section>
+    {% endif %}
 
-  <section class="lead">
-    <h2>Dados da empresa para a análise personalizada</h2>
-    <p class="lead-sub">O resultado e o relatório em PDF serão adaptados ao nome da empresa e ao modo de operação.</p>
-    <form id="form-lead">
-      <label class="campo cheio">Nome do responsável<input name="nome" type="text" placeholder="Como posso te chamar?" maxlength="150" required></label>
-      <label class="campo cheio">E-mail<input name="email" type="email" placeholder="seunome@email.com" required></label>
-      <label class="campo">Empresa<input name="empresa" type="text" placeholder="Nome da empresa" maxlength="150" required></label>
-      <label class="campo">Telefone/WhatsApp<input name="telefone" type="tel" placeholder="(81)0000-0000" maxlength="40"></label>
-      <label class="campo">Segmento
-        <select name="segmento">{% for k, rot in segmentos %}<option value="{{ k }}">{{ rot }}</option>{% endfor %}</select>
-      </label>
-      <label class="campo">Modo de operação
-        <select name="modo_operacao">{% for k, rot in modos %}<option value="{{ k }}">{{ rot }}</option>{% endfor %}</select>
-      </label>
-      <label class="campo">Cidade/UF<input name="cidade" type="text" placeholder="Recife/PE" maxlength="80"></label>
-      <label class="campo">Coleta de dados atual
-        <select name="coleta_atual">{% for k, rot in coletas %}<option value="{{ k }}">{{ rot }}</option>{% endfor %}</select>
-      </label>
-      <label class="campo">Conta de energia/mês (R$)<input name="custo_energia_mensal" inputmode="decimal" placeholder="15000"></label>
-      <label class="campo">Manutenção/mês (R$)<input name="custo_manutencao_mensal" inputmode="decimal" placeholder="6000"></label>
-      <label class="campo cheio">Como funciona sua operação?
-        <textarea name="descricao_operacao" rows="5" maxlength="2000" placeholder="Descreva em um ou mais parágrafos: unidades, turnos, principais máquinas, problemas frequentes e como vocês acompanham os dados hoje."></textarea>
-      </label>
-      <button class="enviar" type="submit">Gerar análise personalizada <img src="{% static 'meu_app/img/ic-enviar.svg' %}" alt="" width="18" height="18"></button>
-    </form>
-  </section>
+    {# ------------------------------------------------ custo #}
+    <section class="painel glass custo" aria-labelledby="titulo-custo">
+      <div class="painel-topo">
+        <h2 id="titulo-custo">Investimento estimado</h2>
+        <span class="badge">ESTIMATIVA</span>
+      </div>
+
+      {% if analise %}
+        <p class="valor">R$ {{ analise.custo_estimado|floatformat:"2g" }}</p>
+        {% if analise.faixa_custo and analise.faixa_custo.0 != analise.faixa_custo.1 %}
+        <p class="faixa">Faixa provável: R$ {{ analise.faixa_custo.0|floatformat:"2g" }} a R$ {{ analise.faixa_custo.1|floatformat:"2g" }}</p>
+        {% endif %}
+        {% if analise.justificativa_custo %}<p class="nota">{{ analise.justificativa_custo }}</p>{% endif %}
+      {% else %}
+        <p class="valor">R$ {{ base.custo_base|floatformat:"2g" }}</p>
+      {% endif %}
+
+      <div class="linha"><span>Custo base (regras)</span><hr><b>R$ {{ base.custo_base|floatformat:"2g" }}</b></div>
+      {% if base.area_m2 %}<div class="linha"><span>Área informada</span><hr><b>{{ base.area_m2 }} m²</b></div>{% endif %}
+
+      {% if not base.precos_definidos %}
+      <p class="aviso aviso-info">
+        Os preços dos dispositivos ainda não foram cadastrados pela Bzu Tech, por isso o custo base aparece incompleto.
+        {% if analise and analise.custo_estimado %}O valor estimado acima vem da pesquisa de mercado da Bizu AI.{% endif %}
+      </p>
+      {% endif %}
+      <p class="rodape-custo">
+        Valores aproximados para apoiar a decisão. O orçamento final depende de visita técnica da Bzu Tech.
+      </p>
+    </section>
+
+    {# ------------------------------------------------ dispositivos #}
+    <section class="bloco" aria-labelledby="titulo-dispositivos">
+      <h2 id="titulo-dispositivos">Dispositivos recomendados</h2>
+      <div class="cartoes">
+        {% for item in base.itens %}
+        <article class="cartao glass">
+          <small>{{ item.codigo }}</small>
+          <h3>{{ item.nome }}</h3>
+          <p class="qtd">{{ item.quantidade }} un.{% if item.preco_definido %} × R$ {{ item.preco_unitario|floatformat:"2g" }} = <b>R$ {{ item.subtotal|floatformat:"2g" }}</b>{% else %} · preço a definir{% endif %}</p>
+          <ul>{% for motivo in item.motivos %}<li>{{ motivo }}</li>{% endfor %}</ul>
+          <p class="regra">Como calculamos: {{ item.regra }}</p>
+        </article>
+        {% empty %}
+        <p>Nenhum dispositivo foi indicado para as respostas informadas.</p>
+        {% endfor %}
+      </div>
+
+      {% if analise.dispositivos_recomendados %}
+      <h3 class="subtitulo-bloco">Comentários da Bizu AI</h3>
+      <ul class="lista">
+        {% for d in analise.dispositivos_recomendados %}<li><b>{{ d.nome }}</b>{% if d.motivo %}: {{ d.motivo }}{% endif %}</li>{% endfor %}
+      </ul>
+      {% endif %}
+    </section>
+
+    {# ------------------------------------------------ riscos #}
+    {% if analise.riscos or base.lacunas %}
+    <section class="bloco" aria-labelledby="titulo-riscos">
+      <h2 id="titulo-riscos">Riscos e pontos de atenção</h2>
+      <ul class="lista riscos">
+        {% for r in analise.riscos %}<li>{{ r }}</li>{% endfor %}
+        {% for l in base.lacunas %}<li>{{ l }}</li>{% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+
+    {# ------------------------------------------------ resumo #}
+    {% if analise.resumo %}
+    <section class="resumo glass" aria-labelledby="titulo-resumo">
+      <h2 id="titulo-resumo">Resumo</h2>
+      <p class="texto-resumo">{{ analise.resumo|linebreaksbr }}</p>
+    </section>
+    {% endif %}
+
+    {# ------------------------------------------------ fontes #}
+    {% if analise.fontes %}
+    <section class="bloco" aria-labelledby="titulo-fontes">
+      <h2 id="titulo-fontes">Fontes consultadas</h2>
+      <ul class="lista fontes">
+        {% for f in analise.fontes %}<li><a href="{{ f.url }}" target="_blank" rel="noopener noreferrer">{{ f.titulo }}</a></li>{% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+
+    <div class="acoes">
+      <a class="btn btn-outline" href="{% url 'questionario' %}">Refazer simulação</a>
+      <a class="btn btn-primary" href="{% url 'chat' %}">Tirar dúvidas com a Bizu AI</a>
+    </div>
+  {% endif %}
 </div>
-<span id="url-chat" data-url="{% url 'chat' %}" hidden></span>
 {% endblock %}
 
-{% block js %}<script src="{% static 'meu_app/js/configurar.js' %}"></script>{% endblock %}
+{% block js %}<script src="{% static 'meu_app/js/configurar.js' %}?v=2"></script>{% endblock %}

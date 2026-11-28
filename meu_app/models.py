@@ -40,10 +40,13 @@ class RespostaQuestionario(models.Model):
 
     # Bloco 3: diagnóstico específico
     funcionarios = models.CharField(max_length=20)
+    area_m2 = models.PositiveIntegerField(null=True, blank=True)  # pergunta 10
     conta_energia_mensal = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     diagnostico = models.JSONField(default=dict, blank=True)
 
     respostas = models.JSONField(default=dict, blank=True)
+    # dispositivos indicados a partir das respostas (services/recomendacao.py)
+    recomendacao = models.JSONField(default=dict, blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -105,3 +108,60 @@ class MensagemChat(models.Model):
 
     def __str__(self) -> str:
         return f"[{self.papel}] {self.conteudo[:50]}"
+
+
+class Dispositivo(models.Model):
+    """Catálogo de dispositivos e preços usado pelas regras de cálculo (services/calculos.py).
+
+    Os preços são editados no /admin/. Enquanto preco_unitario for 0, a página de resultado
+    avisa que o preço ainda não foi definido.
+    """
+
+    # Liga o registro aos dispositivos indicados por services/recomendacao.py (EP101, EP111... e GATEWAY).
+    codigo = models.CharField(max_length=20, unique=True)
+    nome = models.CharField(max_length=150)
+    categoria = models.CharField(max_length=80)
+    preco_unitario = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    # Área (m²) que um dispositivo cobre. Vazio = o dispositivo não é dimensionado por área
+    # (ex.: um EP400 por quadro elétrico, um EP121 por porta).
+    cobertura_m2 = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    descricao = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["codigo"]
+        verbose_name = "Dispositivo"
+        verbose_name_plural = "Dispositivos"
+
+    def __str__(self) -> str:
+        return f"{self.codigo} — {self.nome}"
+
+
+class Simulacao(models.Model):
+    """Uma execução do motor de simulação: respostas de entrada e resultado calculado."""
+
+    PENDENTE, PROCESSANDO, PRONTA, ERRO = "pendente", "processando", "pronta", "erro"
+    STATUS = [
+        (PENDENTE, "Pendente"),
+        (PROCESSANDO, "Processando"),  # evita rodar a IA duas vezes se a página for recarregada
+        (PRONTA, "Pronta"),
+        (ERRO, "Erro"),
+    ]
+
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name="simulacoes"
+    )
+    questionario = models.ForeignKey(
+        RespostaQuestionario, on_delete=models.SET_NULL, null=True, blank=True, related_name="simulacoes"
+    )
+    respostas = models.JSONField(default=dict)
+    resultado = models.JSONField(null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS, default=PENDENTE, db_index=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-criado_em"]
+        verbose_name = "Simulação"
+        verbose_name_plural = "Simulações"
+
+    def __str__(self) -> str:
+        return f"Simulação #{self.pk} ({self.get_status_display()})"

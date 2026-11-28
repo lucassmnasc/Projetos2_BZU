@@ -14,16 +14,19 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.db import DatabaseError, IntegrityError, transaction
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
-from .models import DadosConta, MensagemChat, RespostaQuestionario, SimulacaoLead
+from .models import DadosConta, MensagemChat, RespostaQuestionario, Simulacao, SimulacaoLead
 from .services.catalog import FATOR_COLETA, MODOS_OPERACAO, SEGMENTOS, listar_dispositivos
 from .services.chatbot import responder_chat
 from .services.questionario import RespostaInvalida, validar_questionario
+from .services.recomendacao import recomendar_dispositivos
 from .services.roi_engine import analisar_operacao
+from .services.simulacao import executar_simulacao, reservar_para_execucao
 
 logger = logging.getLogger(__name__)
 
@@ -168,8 +171,30 @@ def logout_page(request: HttpRequest) -> HttpResponse:
     return redirect("home")
 
 
-def configurar_page(request: HttpRequest):
-    return render(request, "meu_app/configurar.html", _opcoes_formulario())
+def configurar_page(request: HttpRequest) -> HttpResponse:
+    """Link "SOLUÇÃO BZU" do menu: abre o último resultado do usuário ou o questionário."""
+    if request.user.is_authenticated:
+        ultima = Simulacao.objects.filter(usuario=request.user).first()  # ordering = -criado_em
+        if ultima:
+            return redirect("resultado", pk=ultima.pk)
+    return redirect("questionario")
+
+
+@login_required(login_url="login")
+def resultado_page(request: HttpRequest, pk: int) -> HttpResponse:
+    """Página de resultado (configurar.html). Cada usuário só vê as próprias simulações."""
+    simulacao = get_object_or_404(Simulacao, pk=pk, usuario=request.user)
+    resultado = simulacao.resultado or {}
+    return render(
+        request,
+        "meu_app/configurar.html",
+        {
+            "simulacao": simulacao,
+            "base": resultado.get("base"),
+            "analise": resultado.get("analise"),
+            "aguardando": simulacao.status in (Simulacao.PENDENTE, Simulacao.PROCESSANDO),
+        },
+    )
 
 
 def chat_page(request: HttpRequest):
@@ -202,13 +227,49 @@ def api_questionario(request: HttpRequest) -> JsonResponse:
     except RespostaInvalida as erro:
         return JsonResponse({"erro": "Há respostas faltando ou inválidas.", "pergunta": str(erro)}, status=400)
 
+    recomendacao = recomendar_dispositivos(campos)
     try:
-        registro = RespostaQuestionario.objects.create(usuario=request.user, **campos)
+        with transaction.atomic():
+            registro = RespostaQuestionario.objects.create(usuario=request.user, recomendacao=recomendacao, **campos)
+            # A simulação nasce "pendente"; a página de resultado dispara a execução.
+            simulacao = Simulacao.objects.create(
+                usuario=request.user, questionario=registro, respostas=_json_seguro(campos)
+            )
     except DatabaseError:
         logger.exception("Falha ao salvar questionário do usuário %s", request.user.pk)
         return JsonResponse({"erro": "Não foi possível salvar suas respostas no momento."}, status=503)
 
-    return JsonResponse({"id": registro.pk}, status=201)
+    return JsonResponse(
+        {
+            "id": registro.pk,
+            "simulacao_id": simulacao.pk,
+            "url_resultado": reverse("resultado", args=[simulacao.pk]),
+            "recomendacao": recomendacao,
+        },
+        status=201,
+    )
+
+
+def _json_seguro(campos: Dict[str, Any]) -> Dict[str, Any]:
+    """Decimal não cabe em JSONField: a conta de energia vira texto ("1234.56")."""
+    conta = campos.get("conta_energia_mensal")
+    return {**campos, "conta_energia_mensal": str(conta) if conta is not None else None}
+
+
+@require_POST
+def api_executar_simulacao(request: HttpRequest, pk: int) -> JsonResponse:
+    """Roda o motor da simulação (síncrono, pode levar até ~1 min por causa da busca na web)."""
+    if not request.user.is_authenticated:
+        return JsonResponse({"erro": "Faça login."}, status=401)
+    simulacao = get_object_or_404(Simulacao, pk=pk, usuario=request.user)
+
+    # Só uma requisição executa; se a página for recarregada no meio, a outra só espera.
+    if reservar_para_execucao(simulacao.pk):
+        simulacao.refresh_from_db()
+        executar_simulacao(simulacao)
+    else:
+        simulacao.refresh_from_db()
+    return JsonResponse({"status": simulacao.status})
 
 
 @require_GET

@@ -1,0 +1,34 @@
+TEXTO DE EXEMPLO — substitua pelo conhecimento real da equipe/Bzu Tech.
+Este arquivo é enviado à IA como contexto fixo em toda simulação (services/ia.py).
+
+1. O que é IoT em empresas
+Internet das Coisas (IoT) é o uso de sensores conectados para medir, em tempo real, o que acontece
+em ambientes, equipamentos e processos. Em vez de inspeções manuais periódicas, a empresa passa a
+ter dados contínuos, alertas automáticos e histórico para tomar decisões.
+
+2. Onde a IoT costuma gerar resultado
+- Energia: medir o consumo por quadro ou máquina revela equipamentos ligados fora de hora,
+  picos de demanda e cargas desbalanceadas.
+- Cadeia do frio: monitorar câmaras frias e freezers reduz perda de produtos por variação de
+  temperatura e porta aberta.
+- Qualidade do ar: CO₂ alto indica ventilação insuficiente em salas de aula e escritórios;
+  partículas e TVOC indicam fontes de poluentes.
+- Pressão diferencial: salas limpas, hospitais e laboratórios precisam manter a pressão correta
+  entre ambientes; filtros saturados também aparecem nessa medida.
+
+3. Portfólio Bzu Tech (resumo das folhas de dados)
+- EP101.1: temperatura, umidade e luminosidade (0 a 60 °C).
+- EP111: sonda externa inox para freezers e câmaras frias (−40 a +125 °C).
+- EP121: abertura de porta/janela + temperatura, umidade e luminosidade.
+- EP200: qualidade do ar — eCO₂, TVOC, PM1.0 a PM10, temperatura e umidade; até 2 m do gateway.
+- EP400: medidor de energia trifásico, até 100 A por fase.
+- EP500: pressão diferencial ±125 Pa.
+- Bzu Gateway V1.4: 4 portas RJ45, Wi-Fi, MQTT/SNMP, bateria de 4 h, histórico em microSD.
+- Bzu Cloud: dashboards, alertas (e-mail, Telegram, WhatsApp) e relatórios em PDF/CSV.
+
+4. Riscos comuns em projetos de IoT
+- Cobertura Wi-Fi fraca no local dos gateways.
+- Instalação elétrica do EP400 exige profissional habilitado (NR-10).
+- Sensores mal posicionados (perto de fontes de calor, portas, saídas de ar) geram leituras falsas.
+- Falta de um responsável na empresa para agir sobre os alertas.
+- Custos recorrentes (conectividade, plataforma) esquecidos no orçamento.

@@ -124,6 +124,19 @@ def _validar(pid: str, bruto: Any) -> Dict[str, Any]:
     return limpo
 
 
+AREA_MAXIMA_M2 = 1_000_000
+
+
+def _validar_area(bruto: Any) -> int:
+    """Pergunta 10: área aproximada em m², inteiro entre 1 e 1.000.000."""
+    valor = (bruto if isinstance(bruto, dict) else {}).get("valor")
+    if isinstance(valor, bool) or not isinstance(valor, (int, float)) or valor != int(valor):
+        raise RespostaInvalida("area")
+    if not 1 <= int(valor) <= AREA_MAXIMA_M2:
+        raise RespostaInvalida("area")
+    return int(valor)
+
+
 def _validar_horario(bruto: Any) -> Dict[str, Any]:
     r = bruto if isinstance(bruto, dict) else {}
     if r.get("dias") not in DIAS or r.get("horario") not in HORARIOS:
@@ -148,6 +161,8 @@ def validar_questionario(respostas: Any, setor_analisado: Any) -> Dict[str, Any]
     for pid in ("segmento", "conhece-iot", "usa-iot", "porte", "unidades", "setor", "funcionarios"):
         limpo[pid] = _validar(pid, respostas.get(pid))
     limpo["horario"] = _validar_horario(respostas.get("horario"))
+    area_m2 = _validar_area(respostas.get("area"))
+    limpo["area"] = {"valor": area_m2}
 
     usa_iot = limpo["usa-iot"]["valor"] == "sim"
     if usa_iot:
@@ -189,6 +204,7 @@ def validar_questionario(respostas: Any, setor_analisado: Any) -> Dict[str, Any]
         "situacao_outro": situacoes.get("outro", ""),
         "setor_analisado": setor_analisado,
         "funcionarios": limpo["funcionarios"]["valor"],
+        "area_m2": area_m2,
         "conta_energia_mensal": conta,
         "diagnostico": diagnostico,
         "respostas": limpo,

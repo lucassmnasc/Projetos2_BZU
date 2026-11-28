@@ -183,6 +183,12 @@ const PERGUNTAS = {
       ['1000+', '+1000 funcionários'],
     ],
   },
+  // Pergunta 10 (o PDF pula do 9 para o 11): base do dimensionamento por área em calculos.py
+  area: {
+    bloco: 'diagnostico', numero: '10', tipo: 'numero', unidade: 'm²', maximo: 1000000,
+    titulo: 'Qual é a área aproximada, em m², dos ambientes que serão monitorados?',
+    instrucao: 'Some a área de todos os ambientes do setor que será analisado. Uma estimativa já ajuda.',
+  },
 
   // 1. Energia
   'energia-equipamentos': {
@@ -465,7 +471,7 @@ const SITUACAO_PARA_SETORES = {
   outro: ['outras'],
 };
 
-const TOTAL_ESTIMADO = 13; // perguntas em um caminho típico, usado só na barra de progresso
+const TOTAL_ESTIMADO = 14; // perguntas em um caminho típico, usado só na barra de progresso
 
 // ------------------------------------------------------------------ estado
 
@@ -538,7 +544,8 @@ function proximaDe(id) {
       return lista('setor').length > 1 ? 'prioridade' : 'funcionarios';
     case 'situacoes': return 'prioridade';
     case 'prioridade': return 'funcionarios';
-    case 'funcionarios': return PERGUNTAS_POR_SETOR[setorAnalisado()][0];
+    case 'funcionarios': return 'area';
+    case 'area': return PERGUNTAS_POR_SETOR[setorAnalisado()][0];
     default: {
       const perguntas = PERGUNTAS_POR_SETOR[setorAnalisado()] || [];
       const i = perguntas.indexOf(id);
@@ -568,6 +575,8 @@ function respondida(id) {
       return Boolean((r.valor || '').trim());
     case 'moeda':
       return Number(r.valor) > 0;
+    case 'numero':
+      return Number.isInteger(r.valor) && r.valor > 0 && r.valor <= p.maximo;
     default:
       return true;
   }
@@ -727,6 +736,24 @@ function desenharMoeda(id) {
   el.corpo.append(caixa);
 }
 
+// Número inteiro com unidade ao lado (ex.: área em m²). Só aceita dígitos.
+function desenharNumero(id, p) {
+  const caixa = criar('div', 'resposta-moeda');
+  const campo = criar('input');
+  campo.type = 'text';
+  campo.inputMode = 'numeric';
+  campo.placeholder = '0';
+  campo.setAttribute('aria-labelledby', 'titulo-pergunta');
+  campo.value = resposta(id).valor ? String(resposta(id).valor) : '';
+  campo.addEventListener('input', () => {
+    const digitos = campo.value.replace(/\D/g, '').replace(/^0+/, '').slice(0, String(p.maximo).length);
+    campo.value = digitos;
+    responder(id, { valor: digitos ? Number(digitos) : 0 });
+  });
+  caixa.append(campo, criar('span', 'prefixo', p.unidade));
+  el.corpo.append(caixa);
+}
+
 function explicacaoIoT() {
   const caixa = criar('aside', 'explicacao');
   caixa.append(
@@ -780,6 +807,7 @@ function desenhar() {
   else if (p.tipo === 'colunas') desenharColunas(id, p);
   else if (p.tipo === 'texto') desenharTexto(id, p);
   else if (p.tipo === 'moeda') desenharMoeda(id);
+  else if (p.tipo === 'numero') desenharNumero(id, p);
 
   atualizarNavegacao();
 }
@@ -800,46 +828,12 @@ function respostasDoCaminho() {
   return saida;
 }
 
-function rotuloDe(cfg, valor) {
-  const todas = [...(cfg.opcoes || []), ...(cfg.outro ? [[cfg.outro.valor, cfg.outro.rotulo]] : [])];
-  return (todas.find(([v]) => v === valor) || [valor, valor])[1];
-}
-
-function resumoTexto(respostas) {
-  const linhas = [];
-  Object.entries(respostas).forEach(([id, r]) => {
-    const p = PERGUNTAS[id];
-    if (!r || !p) return;
-    let texto;
-    if (p.tipo === 'colunas') {
-      texto = p.colunas
-        .map((col) => (r[col.chave] === col.outro?.valor ? r[`${col.chave}_outro`] : rotuloDe(col, r[col.chave])))
-        .join(' / ');
-    } else if (p.tipo === 'moeda') {
-      texto = `R$ ${formatoMoeda.format(Number(r.valor) || 0)}`;
-    } else if (p.tipo === 'texto') {
-      texto = r.valor;
-    } else {
-      const valores = Array.isArray(r.valor) ? r.valor : [r.valor];
-      texto = valores.map((v) => (v === p.outro?.valor && r.outro ? `${rotuloDe(p, v)}: ${r.outro}` : rotuloDe(p, v))).join('; ');
-    }
-    linhas.push(`${p.titulo} ${texto}`);
-  });
-  return linhas.join('\n').slice(0, 2000);
-}
-
-const SEGMENTO_CATALOGO = {
-  'industria-manufatura': 'industria', 'energia-utilities': 'industria', agronegocio: 'industria',
-  'alimentacao-cadeia-fria': 'industria', 'logistica-transporte': 'logistica',
-};
-
+// Maturidade de coleta de dados, usada pelo chat (chat.js lê 'bzu_coleta').
 const COLETA_POR_USO = {
   frequente: 'sensoriamento', 'ja-iot': 'sensoriamento', 'sem-central': 'sensoriamento',
   periodico: 'planilha-manual', manual: 'planilha-manual', 'nao-sei': 'planilha-manual',
   nenhum: 'nao-coletamos',
 };
-
-const MODO_POR_HORARIO = { comercial: 'comercial', estendido: 'dois-turnos', continuo: 'continuo' };
 
 function mostrarErro(mensagem) {
   const caixa = document.getElementById('erro-envio');
@@ -856,47 +850,33 @@ async function enviarRespostas(respostas, setor) {
   });
   const dados = await resp.json().catch(() => ({}));
   if (!resp.ok) throw new Error(dados.erro || 'Não foi possível salvar suas respostas.');
-  return dados.id;
+  return dados;
 }
 
 async function finalizar() {
-  const respostas = respostasDoCaminho();
-  const setor = setorAnalisado();
-
   el.proxima.disabled = true;
   el.proxima.textContent = 'Salvando...';
   mostrarErro('');
-  let idQuestionario;
+  let dados;
   try {
-    idQuestionario = await enviarRespostas(respostas, setor);
+    // O servidor salva as respostas e cria a Simulacao (status "pendente").
+    dados = await enviarRespostas(respostasDoCaminho(), setorAnalisado());
   } catch (erro) {
     mostrarErro(erro instanceof TypeError ? 'Sem conexão com o servidor. Tente novamente.' : erro.message);
     atualizarNavegacao();
     return;
   }
 
-  const segmentos = lista('segmento');
-  const coleta = resposta('usa-iot').valor === 'sim'
-    ? COLETA_POR_USO[resposta('uso-iot').valor] || 'planilha-manual'
-    : 'nao-coletamos';
-
-  // pré-preenche a página "Configure sua operação" com o que já foi respondido
   try {
-    const lead = JSON.parse(sessionStorage.getItem('bzu_lead') || '{}') || {};
-    lead.segmento = segmentos.map((s) => SEGMENTO_CATALOGO[s]).find(Boolean) || 'predial';
-    lead.coleta_atual = coleta;
-    const modo = MODO_POR_HORARIO[resposta('horario').horario];
-    if (modo) lead.modo_operacao = modo;
-    if (setor === 'energia' && resposta('energia-conta').valor) {
-      lead.custo_energia_mensal = String(resposta('energia-conta').valor);
-    }
-    lead.descricao_operacao = resumoTexto(respostas);
-    sessionStorage.setItem('bzu_lead', JSON.stringify(lead));
+    const coleta = resposta('usa-iot').valor === 'sim'
+      ? COLETA_POR_USO[resposta('uso-iot').valor] || 'planilha-manual'
+      : 'nao-coletamos';
     sessionStorage.setItem('bzu_coleta', coleta);
-    sessionStorage.setItem('bzu_questionario_respostas', JSON.stringify({ id: idQuestionario, setor_analisado: setor, respostas }));
+    sessionStorage.removeItem(CHAVE_ESTADO); // questionário concluído: a próxima visita começa do zero
   } catch (_) {}
 
-  window.location.assign(el.proxima.dataset.url);
+  // A página de resultado mostra o carregamento enquanto a simulação roda.
+  window.location.assign(dados.url_resultado);
 }
 
 // ------------------------------------------------------------------ eventos

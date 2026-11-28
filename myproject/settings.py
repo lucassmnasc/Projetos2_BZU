@@ -131,3 +131,9 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# ---------------------------------------------------------------- IA da simulação (Anthropic)
+# A chave vem SÓ de variável de ambiente; nunca escreva a chave neste arquivo.
+# Sem chave, a simulação ainda mostra o cálculo das regras e avisa que a análise da IA não rodou.
+ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY', '')
+ANTHROPIC_MODEL = os.getenv('ANTHROPIC_MODEL', 'claude-opus-5-5')
